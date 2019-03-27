@@ -145,6 +145,7 @@ public:
 
         // condicion de que las blancas o las negras no tienen movimientos posibles
 
+/*
         bool blanco_se_puede_mover = false;
                 bool negro_se_puede_mover = false;
 
@@ -162,12 +163,16 @@ public:
                 if (!blanco_se_puede_mover || !negro_se_puede_mover){
                     return true;
                 }
+*/
+
         return false;
     }
 
     // en caso de que alguien haya ganado devuelve el equipo ganador
     string getWinnerTeam()
     {
+
+        // condicion de que algun equipo haya sido eliminado
         int blancas = 0;
         int negras = 0;
 
@@ -179,20 +184,24 @@ public:
                     if (tablero_[i][j]->getTeam() == "Negro"){
                         negras++;
                     }
-                    else (tablero_[i][j]->getTeam() == "Blanco");{
+                    else{
+                        if(tablero_[i][j]->getTeam() == "Blanco"){
                         blancas++;
+                        }
                     }
                 }
 
             }
         }
 
-        if(negras == 0){
+        if(negras == 0 ){
             return "Las blancas han ganado!";
         }
-        else{
+
+        if(blancas == 0 ){
             return "Las negras han ganado!";
         }
+
 
 
 
@@ -209,6 +218,7 @@ public:
 
         // condicion de que las blancas o las negras no tienen movimientos posibles
 
+/*
         bool blanco_se_puede_mover = false;
         bool negro_se_puede_mover = false;
 
@@ -229,7 +239,7 @@ public:
         else{
             return "Las negras han ganado!";
         }
-
+*/
 
     }
 
@@ -252,13 +262,14 @@ public:
     }
 
     // calcula si la pieza seleccionada puede matar hacia la derecha
-    bool canKillRight(int i, int j){
+    bool canKillRight(int i, int j)
+    {
         if(tablero_[i][j]->getTeam() == "Blanco"){
             if(tablero_[i+1][j+1]->getTeam() == "Negro"){
                 return true;
             }
         }
-        else{
+        if(tablero_[i][j]->getTeam() == "Negro"){
             if(tablero_[i-1][j+1]->getTeam() == "Blanco"){
                 return true;
             }
@@ -268,13 +279,14 @@ public:
     }
 
     // calcula si la pieza seleccionada puede matar hacia la izquierda
-    bool canKillLeft(int i, int j){
+    bool canKillLeft(int i, int j)
+    {
         if(tablero_[i][j]->getTeam() == "Blanco"){
             if(tablero_[i+1][j-1]->getTeam() == "Negro"){
                 return true;
             }
         }
-        else{
+        if(tablero_[i][j]->getTeam() == "Negro"){
             if(tablero_[i-1][j-1]->getTeam() == "Blanco"){
                 return true;
             }
@@ -462,6 +474,9 @@ public:
 
 int main()
 {
+    int white_wins = 0;
+    int black_wins = 0;
+
     Board board;
 
     // game logic
@@ -472,6 +487,13 @@ int main()
         board.userMove();
 
         board.printTablero();
+    }
+
+    if (board.getWinnerTeam() == "Las blancas han ganado!"){
+        white_wins++;
+    }
+    else{
+        black_wins++;
     }
 
     return 0;
