@@ -152,6 +152,7 @@ class Board
             }
 
 
+            // condicion de que nadie puede mover
             bool blanco_se_puede_mover = false;
             bool negro_se_puede_mover = false;
 
@@ -162,40 +163,19 @@ class Board
                     {
                         if(!blanco_se_puede_mover && tablero_[i][j]->getTeam() == "Blanco"){
                             blanco_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            cout << blanco_se_puede_mover << '\n';
                         }
                         if(!negro_se_puede_mover && tablero_[i][j]->getTeam() == "Negro"){
                             negro_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            cout << negro_se_puede_mover << '\n';
                         }
                     }
                 }
             }
 
-            return !blanco_se_puede_mover || !negro_se_puede_mover;
+            cout << blanco_se_puede_mover || negro_se_puede_mover << '\n';
 
-
-            // condicion de que las blancas o las negras no tienen movimientos posibles (no funciona)
-
-    /*
-            bool blanco_se_puede_mover = false;
-                    bool negro_se_puede_mover = false;
-
-                    for (int i = 0; i < 3; i++) {
-                        for (int j = 0; j < 3; j++) {
-                            if(tablero_[i][j] != NULL){
-                                if(tablero_[i][j]->getTeam() == "Blanco"){
-                                    blanco_se_puede_mover = blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                                }else{
-                                    negro_se_puede_mover = negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                                }
-                            }
-                        }
-                    }
-                    if (!blanco_se_puede_mover || !negro_se_puede_mover){
-                        return true;
-                    }
-    */
-
-            return false;
+            return blanco_se_puede_mover || negro_se_puede_mover;
         }
 
 
@@ -284,41 +264,6 @@ class Board
             if(!blanco_se_puede_mover){
                 return "Las negras han ganado!";
             }
-
-
-
-
-
-
-
-
-
-
-
-            // condicion de que las blancas o las negras no tienen movimientos posibles (no funciona)
-
-    /*
-            bool blanco_se_puede_mover = false;
-            bool negro_se_puede_mover = false;
-
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if(tablero_[i][j] != NULL){
-                        if(tablero_[i][j]->getTeam() == "Blanco"){
-                            blanco_se_puede_mover == blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                        }else{
-                            negro_se_puede_mover == negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                        }
-                    }
-                }
-            }
-            if (!blanco_se_puede_mover){
-                return "Las blancas han ganado!";
-            }
-            else{
-                return "Las negras han ganado!";
-            }
-    */
         }
 
 
@@ -577,7 +522,7 @@ class Board
 
 
         // hace que el jugador seleccione una jugada hasta que sea legal
-        void userMove()
+        void userMoveWhite()
         {
             int i;
             int j;
@@ -642,6 +587,72 @@ class Board
                 }
             }
         }
+
+        void userMoveBlack()
+        {
+            int i;
+            int j;
+            bool moveOk = false;
+            bool optionOk = false;
+            int option = 0;
+
+            do {
+                printTablero();
+
+                cout<<"Selecciona las coordenadas de la ficha que quieres mover\n\ti: ";
+                cin>>i;
+                cout<<"\tj: ";
+                cin>>j;
+
+                cout<<"\nSelecciona que movimiento quieres realizar: \n";
+                cout << "[1] mover hacia delante" << '\n';
+                cout << "[2] comer hacia la derecha" << '\n';
+                cout << "[3] comer hacia la izquerda" << '\n';
+                cout << "Introduzca su jugada: ";
+                cin >> option;
+                cout << '\n' << '\n' << '\n';
+
+                if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Negro" && option <= 3 && option >=1)
+                {
+                    optionOk = true;
+
+                    switch (option)
+                    {
+                        case 1: {
+                            moveOk = canMoveForward(i, j);
+                            break;
+                        }
+                        case 2: {
+                            moveOk = canKillRight(i, j);
+                            break;
+                        }
+                        case 3: {
+                            moveOk = canKillLeft(i, j);
+                            break;
+                        }
+                    }
+
+                }else{
+                    cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
+                }
+            } while(!optionOk && !moveOk);
+
+            switch (option)
+            {
+                case 1:{
+                    moveForward(i, j);
+                    break;
+                }
+                case 2:{
+                    killRight(i, j);
+                    break;
+                }
+                case 3:{
+                    killLeft(i, j);
+                    break;
+                }
+            }
+        }
 };
 
 
@@ -649,13 +660,22 @@ int main()
 {
     int white_wins = 0;
     int black_wins = 0;
+    int turn_counter = 0;
 
     Board board;
 
 
         while(!board.isWinScenario())
         {
-            board.userMove();
+            if(turn_counter % 2 == 0)
+            {
+                cout << "Turno del equipo blanco:" << '\n' << '\n' << '\n';
+                board.userMoveWhite();
+            }else{
+                cout << "Turno del equipo negro:" << '\n' << '\n' << '\n';
+                board.userMoveBlack();
+            }
+            turn_counter++;
         }
 
         if (board.getWinnerTeam() == "Las blancas han ganado!")
