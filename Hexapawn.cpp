@@ -306,7 +306,7 @@ class Board
         // calcula si la pieza seleccionada puede matar hacia la izquierda
         bool canKillLeft(int i, int j)
         {
-            if(tablero_[i][j]->getTeam() == "Blanco")
+            if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Blanco")
             {
                 if(tablero_[i+1][j-1] != NULL && tablero_[i+1][j-1]->getTeam() == "Negro")
                 {
@@ -314,7 +314,7 @@ class Board
                 }
             }
 
-            if(tablero_[i][j]->getTeam() == "Negro")
+            if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Negro")
             {
                 if(tablero_[i-1][j-1] != NULL && tablero_[i-1][j-1]->getTeam() == "Blanco"){
                     return true;
@@ -450,7 +450,7 @@ class Board
             cin >> option;
             cout << '\n' << '\n' << '\n';
 
-            if(tablero_[i][j] != NULL && option <= 3 && option >=1)
+            if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1)
             {
                 optionOk = true;
             }
@@ -497,6 +497,8 @@ class Board
 
             while (!moveOk)
             {
+                printTablero();
+
                 while(!optionOk)
                 {
                     cout<< "\nSelecciona las coordenadas de la ficha que quieres mover\n";
@@ -513,7 +515,7 @@ class Board
                     cin >> option;
                     cout << '\n' << '\n' << '\n';
 
-                    if(tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1)
+                    if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1)
                     {
                         optionOk = true;
                     }
