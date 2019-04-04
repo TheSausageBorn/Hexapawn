@@ -162,11 +162,11 @@ class Board
                     if(tablero_[i][j] != NULL)
                     {
                         if(!blanco_se_puede_mover && tablero_[i][j]->getTeam() == "Blanco"){
-                            blanco_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            blanco_se_puede_mover = canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
                             cout << blanco_se_puede_mover << '\n';
                         }
                         if(!negro_se_puede_mover && tablero_[i][j]->getTeam() == "Negro"){
-                            negro_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            negro_se_puede_mover = canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
                             cout << negro_se_puede_mover << '\n';
                         }
                     }
@@ -175,7 +175,7 @@ class Board
 
             cout << blanco_se_puede_mover || negro_se_puede_mover << '\n';
 
-            return blanco_se_puede_mover || negro_se_puede_mover;
+            return !blanco_se_puede_mover || !negro_se_puede_mover;
         }
 
 
@@ -243,11 +243,11 @@ class Board
                     {
                         if(!blanco_se_puede_mover && tablero_[i][j]->getTeam() == "Blanco"){
                             cout << "\nse puede mover blanca? " << canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j) << '\n';
-                            blanco_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            blanco_se_puede_mover = canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
                         }
                         if(!negro_se_puede_mover && tablero_[i][j]->getTeam() == "Negro"){
                             cout << "\nse puede mover negra? " << canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j) << '\n';
-                            negro_se_puede_mover == canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
+                            negro_se_puede_mover = canMoveForward(i, j) || canKillRight(i, j) || canKillLeft(i, j);
                         }
                     }
                 }
