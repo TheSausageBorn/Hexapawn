@@ -266,7 +266,6 @@ class Board
                 {
                     return true;
                 }
-
             }
 
             if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Negro")
@@ -568,14 +567,11 @@ int main()
 {
     int white_wins = 0;
     int black_wins = 0;
-    int win_counter = 0;
 
     Board board;
 
     board.printTablero();
 
-    while(win_counter <= 3)
-    {
         while(!board.isWinScenario())
         {
             board.userMove();
@@ -583,17 +579,17 @@ int main()
             board.printTablero();
         }
 
-        if (board.getWinnerTeam() == "Las blancas han ganado!"){
+        if (board.getWinnerTeam() == "Las blancas han ganado!")
+        {
             white_wins++;
-            win_counter++;
+            cout << board.getWinnerTeam() << '\n' << '\n' << '\n';
         }
 
         else
         {
             black_wins++;
-            win_counter++;
+            cout << board.getWinnerTeam() << '\n' << '\n' << '\n';
         }
-    }
 
     return 0;
 }
