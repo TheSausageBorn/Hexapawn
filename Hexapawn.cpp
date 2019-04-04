@@ -3,441 +3,476 @@
 #include <stdlib.h>
 using namespace std;
 
-class Pawn{
+class Pawn
+{
 
+    private:
+        // variables privadas de la clase Pawn
+        string team_;
+        int id_;
 
-private:
-    string team_;
-    int id_;
+    public:
+        // constructor de objetos Pawn
+        Pawn(string team = "none", int id = 0)
+        {
+            team_ = team;
+            id_ = id;
+      	}
 
+        Pawn(Pawn const &pawn)
+        {
+            team_ = pawn.getTeam();
+            id_ = pawn.getId();
+      	}
 
-public:
+        // funcion que devuelve el equipo de objetos Pawn
+        string getTeam() const
+        {
+            return team_;
+        }
 
-    // constructor de objetos Pawn
-    Pawn(string team = "none", int id = 0)
-    {
-        team_ = team;
-        id_ = id;
-  	}
+        // funcion que devuelve el Id de objetos Pawn
+        int getId() const
+        {
+            return id_;
+        }
 
-    Pawn(Pawn const &pawn)
-    {
-        team_ = pawn.getTeam();
-        id_ = pawn.getId();
-  	}
+        // funcion para darle/cambiar el equipo de objetos Pawn (ahora mismo no se usa)
+        void setTeam(string team)
+        {
+            team_ = team;
+        }
 
-
-
-    string getTeam() const
-    {
-        return team_;
-    }
-
-    int getId() const
-    {
-        return id_;
-    }
-
-    void setTeam(string team)
-    {
-        team_ = team;
-    }
-
-    void setId(int id)
-    {
-        id_ = id;
-    }
+        // funcion para darle/cambiar Id de objetos Pawn (ahora mismo no se usa)
+        void setId(int id)
+        {
+            id_ = id;
+        }
 
 };
 
 
-class Board {
-private:
-    Pawn*** tablero_;
+class Board
+{
 
-public:
+    private:
+        Pawn*** tablero_;
 
-    // constructor del objeto Board
-    Board ()
-    {
-        // crea el tablero (memoria)
-        tablero_ = (Pawn***)calloc(3, sizeof(Pawn**));
+    public:
+        // constructor del objeto Board
+        Board ()
+        {
+            // crea el tablero (memoria)
+            tablero_ = (Pawn***)calloc(3, sizeof(Pawn**));
 
-    	for (int i = 0; i < 3; i++){
-    		tablero_[i] = (Pawn**)calloc(3, sizeof(Pawn*));
-            for(int j = 0; j < 3; j++){
-            	tablero_[i][j] = (Pawn*)calloc(1,sizeof(Pawn));
+        	for (int i = 0; i < 3; i++){
+        		tablero_[i] = (Pawn**)calloc(3, sizeof(Pawn*));
+                for(int j = 0; j < 3; j++){
+                	tablero_[i][j] = (Pawn*)calloc(1,sizeof(Pawn));
+                }
+            }
+
+            // mete las fichas en el tablero (llena la memoria)
+            for(int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    if(i == 0){
+                        tablero_[i][j] = new Pawn ("Blanco", j);
+                    }
+                    if(i == 1){
+                        tablero_[i][j] = NULL;
+                    }
+                    if(i == 2){
+                        tablero_[i][j] = new Pawn ("Negro", j);
+                    }
+                }
             }
         }
 
-        // mete las fichas en el tablero (llena la memoria)
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                if(i == 0){
-                    tablero_[i][j] = new Pawn ("Blanco", j);
-                }
-                if(i == 1){
-                    tablero_[i][j] = NULL;
-                }
-                if(i == 2){
-                    tablero_[i][j] = new Pawn ("Negro", j);
-                }
-            }
-        }
-    }
 
-
-    // destructor del objeto Board
-    ~Board ()
-    {
-        for (int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-            	free(tablero_[i][j]);
-            }
-            free(tablero_[i]);
-        }
-    	free(tablero_);
-    }
-
-
-    // calcula si alguien ha ganado
-    bool isWinScenario()
-    {
-        // condicion de solo quedan negras o blancas
-
-        int blancas = 0;
-        int negras = 0;
-
-        for (int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++)
+        // destructor del objeto Board
+        ~Board ()
+        {
+            for (int i = 0; i < 3; i++)
             {
-
-                if (tablero_[i][j] != NULL) {
-                    if (tablero_[i][j]->getTeam() == "Negro"){
-                        negras++;
-                    }
-                    else{
-                        if(tablero_[i][j]->getTeam() == "Blanco"){
-                        blancas++;
-                        }
-                    }
+                for(int j = 0; j < 3; j++)
+                {
+                	free(tablero_[i][j]);
                 }
-
+                free(tablero_[i]);
             }
-        }
-
-        if(negras == 0 || blancas == 0){
-            return true;
+        	free(tablero_);
         }
 
 
+        // calcula si alguien ha ganado
+        bool isWinScenario()
+        {
 
-        // condicion de que las blancas o las negras lleguen al borde el otro
 
-        for (int j = 0; j < 3; j++) {
-            if (tablero_[2][j] != NULL && tablero_[2][j]->getTeam() == "Blanco") {
-                return true;
-            }
-            if (tablero_[0][j] != NULL && tablero_[0][j]->getTeam() == "Negro") {
-                return true;
-            }
-        }
+            // condicion de solo quedan negras o blancas (no funciona)
+            int blancas = 0;
+            int negras = 0;
 
-        // condicion de que las blancas o las negras no tienen movimientos posibles
+            for (int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
 
-/*
-        bool blanco_se_puede_mover = false;
-                bool negro_se_puede_mover = false;
-
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        if(tablero_[i][j] != NULL){
-                            if(tablero_[i][j]->getTeam() == "Blanco"){
-                                blanco_se_puede_mover = blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                            }else{
-                                negro_se_puede_mover = negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
+                    if (tablero_[i][j] != NULL)
+                    {
+                        if (tablero_[i][j]->getTeam() == "Negro")
+                        {
+                            negras++;
+                        }
+                        else
+                        {
+                            if(tablero_[i][j]->getTeam() == "Blanco")
+                            {
+                                blancas++;
                             }
                         }
                     }
                 }
-                if (!blanco_se_puede_mover || !negro_se_puede_mover){
+            }
+
+            if(negras == 0 || blancas == 0)
+            {
+                return true;
+            }
+
+
+            // condicion de que las blancas o las negras lleguen al borde el otro
+            for (int j = 0; j < 3; j++)
+            {
+                if (tablero_[2][j] != NULL && tablero_[2][j]->getTeam() == "Blanco")
+                {
                     return true;
                 }
-*/
+                if (tablero_[0][j] != NULL && tablero_[0][j]->getTeam() == "Negro")
+                {
+                    return true;
+                }
+            }
 
-        return false;
-    }
 
-    // en caso de que alguien haya ganado devuelve el equipo ganador
-    string getWinnerTeam()
-    {
+            // condicion de que las blancas o las negras no tienen movimientos posibles (no funciona)
 
-        // condicion de que algun equipo haya sido eliminado
-        int blancas = 0;
-        int negras = 0;
+    /*
+            bool blanco_se_puede_mover = false;
+                    bool negro_se_puede_mover = false;
 
-        for (int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++)
-            {
-
-                if (tablero_[i][j] != NULL) {
-                    if (tablero_[i][j]->getTeam() == "Negro"){
-                        negras++;
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            if(tablero_[i][j] != NULL){
+                                if(tablero_[i][j]->getTeam() == "Blanco"){
+                                    blanco_se_puede_mover = blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
+                                }else{
+                                    negro_se_puede_mover = negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
+                                }
+                            }
+                        }
                     }
-                    else{
+                    if (!blanco_se_puede_mover || !negro_se_puede_mover){
+                        return true;
+                    }
+    */
+
+            return false;
+        }
+
+
+        // en caso de que alguien haya ganado devuelve el equipo ganador
+        string getWinnerTeam()
+        {
+
+            // condicion de que algun equipo haya sido eliminado (no funciona)
+            int blancas = 0;
+            int negras = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+
+                    if (tablero_[i][j] != NULL)
+                    {
+                        if (tablero_[i][j]->getTeam() == "Negro")
+                        {
+                            negras++;
+                        }
+                        else
+                        {
+                            if(tablero_[i][j]->getTeam() == "Blanco")
+                            {
+                                blancas++;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            if(negras == 0 ){
+                return "Las blancas han ganado!";
+            }
+
+            if(blancas == 0 ){
+                return "Las negras han ganado!";
+            }
+
+
+
+
+            // condicion de que las blancas o las negras lleguen al borde el otro
+            for (int j = 0; j < 3; j++)
+            {
+                if (tablero_[2][j] != NULL && tablero_[2][j]->getTeam() == "Blanco")
+                {
+                    return "Las blancas han ganado!";
+                }
+                if (tablero_[0][j] != NULL && tablero_[0][j]->getTeam() == "Negro")
+                {
+                    return "Las negras han ganado!";
+                }
+            }
+
+
+            // condicion de que las blancas o las negras no tienen movimientos posibles (no funciona)
+
+    /*
+            bool blanco_se_puede_mover = false;
+            bool negro_se_puede_mover = false;
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if(tablero_[i][j] != NULL){
                         if(tablero_[i][j]->getTeam() == "Blanco"){
-                        blancas++;
+                            blanco_se_puede_mover == blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
+                        }else{
+                            negro_se_puede_mover == negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
                         }
                     }
                 }
-
             }
-        }
-
-        if(negras == 0 ){
-            return "Las blancas han ganado!";
-        }
-
-        if(blancas == 0 ){
-            return "Las negras han ganado!";
-        }
-
-
-
-
-        // condicion de que las blancas o las negras lleguen al borde el otro
-
-        for (int j = 0; j < 3; j++) {
-            if (tablero_[2][j] != NULL && tablero_[2][j]->getTeam() == "Blanco") {
+            if (!blanco_se_puede_mover){
                 return "Las blancas han ganado!";
             }
-            if (tablero_[0][j] != NULL && tablero_[0][j]->getTeam() == "Negro") {
+            else{
                 return "Las negras han ganado!";
             }
+    */
         }
 
-        // condicion de que las blancas o las negras no tienen movimientos posibles
 
-/*
-        bool blanco_se_puede_mover = false;
-        bool negro_se_puede_mover = false;
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if(tablero_[i][j] != NULL){
-                    if(tablero_[i][j]->getTeam() == "Blanco"){
-                        blanco_se_puede_mover == blanco_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
-                    }else{
-                        negro_se_puede_mover == negro_se_puede_mover || canMoveForward(i, j) || canKillLeft(i, j) || canKillRight(i, j);
+        // calcula si la pieza seleccionada pueder mover hacia delante
+        bool canMoveForward(int i, int j)
+        {
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                if(tablero_[i+1][j] == NULL && i < 2)
+                {
+                    return true;
+                }
+
+            }
+
+            else
+            {
+                if(tablero_[i-1][j] == NULL && i > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        // calcula si la pieza seleccionada puede matar hacia la derecha
+        bool canKillRight(int i, int j)
+        {
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                if(tablero_[i+1][j+1] != NULL && tablero_[i+1][j+1]->getTeam() == "Negro")
+                {
+                    return true;
+                }
+            }
+
+            if(tablero_[i][j]->getTeam() == "Negro")
+            {
+                if(tablero_[i-1][j+1] != NULL && tablero_[i-1][j+1]->getTeam() == "Blanco")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        // calcula si la pieza seleccionada puede matar hacia la izquierda
+        bool canKillLeft(int i, int j)
+        {
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                if(tablero_[i+1][j-1] != NULL && tablero_[i+1][j-1]->getTeam() == "Negro")
+                {
+                    return true;
+                }
+            }
+
+            if(tablero_[i][j]->getTeam() == "Negro")
+            {
+                if(tablero_[i-1][j-1] != NULL && tablero_[i-1][j-1]->getTeam() == "Blanco"){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        // mueve la pieza seleccionada hacia delante
+        bool moveForward(int i, int j)
+        {
+
+            if(!canMoveForward(i, j))
+            {
+                return false;
+            }
+
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                tablero_[i+1][j] = tablero_[i][j];
+                tablero_[i][j] = NULL;
+            }
+
+            else
+            {
+              tablero_[i-1][j] = tablero_[i][j];
+              tablero_[i][j] = NULL;
+            }
+
+            return true;
+        }
+
+        // mueve la pieza seleccionada comiendo hacia la derecha
+        bool killRight(int i, int j)
+        {
+            if(!canKillRight(i, j))
+            {
+                return false;
+            }
+
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                tablero_[i+1][j+1] = tablero_[i][j];
+                tablero_[i][j] = NULL;
+            }
+
+            else
+            {
+                tablero_[i-1][j+1] = tablero_[i][j];
+                tablero_[i][j] = NULL;
+            }
+
+            return true;
+        }
+
+
+        // mueve la pieza seleccionada comiendo hacia la izquierda
+        bool killLeft(int i, int j)
+        {
+            if(!canKillLeft(i, j)){
+                return false;
+            }
+
+            if(tablero_[i][j]->getTeam() == "Blanco")
+            {
+                tablero_[i+1][j-1] = tablero_[i][j];
+                tablero_[i][j] = NULL;
+            }
+
+            else
+            {
+                tablero_[i-1][j-1] = tablero_[i][j];
+                tablero_[i][j] = NULL;
+            }
+
+            return true;
+        };
+
+
+
+        Pawn& getPawn(int i, int j) const
+        {
+            if (tablero_[i][j] != NULL)
+            {
+                return *new Pawn(*tablero_[i][j]);
+            }
+
+            else
+            {
+                return *new Pawn();
+            }
+        }
+
+
+        // imprime el tablero en pantalla
+        void printTablero()
+        {
+            for (int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    if (!tablero_[i][j]) {
+                        cout<<"  0  , ";
+                    }
+                    else{
+                        cout<<tablero_[i][j]->getTeam()<<" "<<tablero_[i][j]->getId()<<", ";
                     }
                 }
-            }
-        }
-        if (!blanco_se_puede_mover){
-            return "Las blancas han ganado!";
-        }
-        else{
-            return "Las negras han ganado!";
-        }
-*/
-
-    }
-
-
-
-    // calcula si la pieza seleccionada pueder mover hacia delante
-    bool canMoveForward(int i, int j){
-        if(tablero_[i][j]->getTeam() == "Blanco"){ // logica directa
-            if(tablero_[i+1][j] == NULL && i < 2){
-                return true;
-            }
-        }else{ //logica invertida
-            if(tablero_[i-1][j] == NULL && i > 0){
-                return true;
+                cout<< '\n' << '\n' << '\n';
             }
         }
 
 
-        return false;
-    }
-
-    // calcula si la pieza seleccionada puede matar hacia la derecha
-    bool canKillRight(int i, int j)
-    {
-        if(tablero_[i][j]->getTeam() == "Blanco"){
-            if(tablero_[i+1][j+1]->getTeam() == "Negro"){
-                return true;
-            }
-        }
-        if(tablero_[i][j]->getTeam() == "Negro"){
-            if(tablero_[i-1][j+1]->getTeam() == "Blanco"){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // calcula si la pieza seleccionada puede matar hacia la izquierda
-    bool canKillLeft(int i, int j)
-    {
-        if(tablero_[i][j]->getTeam() == "Blanco"){
-            if(tablero_[i+1][j-1]->getTeam() == "Negro"){
-                return true;
-            }
-        }
-        if(tablero_[i][j]->getTeam() == "Negro"){
-            if(tablero_[i-1][j-1]->getTeam() == "Blanco"){
-                return true;
-            }
-        }
-
-            return false;
-    }
-
-
-    // mueve la pieza seleccionada hacia delante
-    bool moveForward(int i, int j)
-    {
-
-        if(!canMoveForward(i, j)){
-            return false;
-        }
-
-        if(tablero_[i][j]->getTeam() == "Blanco"){ // logica directa
-            tablero_[i+1][j] = tablero_[i][j];
-            tablero_[i][j] = NULL;
-        }
-        else{ //logica invertida
-          tablero_[i-1][j] = tablero_[i][j];
-          tablero_[i][j] = NULL;
-        }
-
-
-        return true;
-    }
-
-    // mueve la pieza seleccionada comiendo hacia la derecha
-    bool killRight(int i, int j)
-    {
-        if(!canKillRight(i, j)){
-            return false;
-        }
-
-        if(tablero_[i][j]->getTeam() == "Blanco"){
-            tablero_[i+1][j+1] = tablero_[i][j];
-            tablero_[i][j] = NULL;
-        }
-        else{
-            tablero_[i-1][j+1] = tablero_[i][j];
-            tablero_[i][j] = NULL;
-        }
-
-        return true;
-    }
-
-    // mueve la pieza seleccionada comiendo hacia la izquierda
-    bool killLeft(int i, int j)
-    {
-        if(!canKillLeft(i, j)){
-            return false;
-        }
-
-        if(tablero_[i][j]->getTeam() == "Blanco"){
-            tablero_[i+1][j-1] = tablero_[i][j];
-            tablero_[i][j] = NULL;
-        }
-        else{
-            tablero_[i-1][j-1] = tablero_[i][j];
-            tablero_[i][j] = NULL;
-        }
-
-        return true;
-    };
-
-    Pawn& getPawn(int i, int j) const
-    {
-        if (tablero_[i][j] != NULL){
-            return *new Pawn(*tablero_[i][j]);
-        }
-        else{
-            return *new Pawn();
-        }
-    }
-
-
-    void printTablero()
-    {
-        for (int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                if (!tablero_[i][j]) {
-                    cout<<"  0  , ";
-                }
-                else{
-                    cout<<tablero_[i][j]->getTeam()<<" "<<tablero_[i][j]->getId()<<", ";
-                }
-            }
-            cout<<'\n'<< endl;
-        }
-    }
-
-
-    void userMove()
-    {
-        int i;
-        int j;
-        bool moveOk = false;
-        bool optionOk = false;
-        int option;
-
-        cout<<"Selecciona las coordenadas de la ficha que quieres mover\n\ti: ";
-        cin>>i;
-        cout<<"\tj: ";
-        cin>>j;
-
-        cout<<"\nSelecciona que movimiento quieres realizar: \n";
-        cout << "[1] mover hacia delante" << '\n';
-        cout << "[2] comer hacia la derecha" << '\n';
-        cout << "[3] comer hacia la izquerda" << '\n';
-        cout << "introduzca su jugada: ";
-        cin >> option;
-
-        if(tablero_[i][j] != NULL && option <= 3 && option >=1){
-            optionOk = true;
-        }
-        else{
-            cout << endl << endl << "Ese movimiento es ilegal, repita su jugada." << endl << endl << endl;
-        }
-
-        while (!moveOk)
+        // hace que el jugador seleccione una jugada hasta que sea legal
+        void userMove()
         {
-            while(!optionOk)
+            int i;
+            int j;
+            bool moveOk = false;
+            bool optionOk = false;
+            int option;
+
+            cout<<"Selecciona las coordenadas de la ficha que quieres mover\n\ti: ";
+            cin>>i;
+            cout<<"\tj: ";
+            cin>>j;
+
+            cout<<"\nSelecciona que movimiento quieres realizar: \n";
+            cout << "[1] mover hacia delante" << '\n';
+            cout << "[2] comer hacia la derecha" << '\n';
+            cout << "[3] comer hacia la izquerda" << '\n';
+            cout << "Introduzca su jugada: ";
+            cin >> option;
+            cout << '\n' << '\n' << '\n';
+
+            if(tablero_[i][j] != NULL && option <= 3 && option >=1)
             {
-                cout<<"\nSelecciona las coordenadas de la ficha que quieres mover\n\ti: ";
-                cin>>i;
-                cout<<"\tj: ";
-                cin>>j;
+                optionOk = true;
+            }
 
-                cout<<"\nSelecciona que movimiento quieres realizar: \n";
-                cout << "[1] mover hacia delante" << '\n';
-                cout << "[2] comer hacia la derecha" << '\n';
-                cout << "[3] comer hacia la izquerda" << '\n';
-                cout << "introduzca su jugada: ";
-                cin >> option;
-                cout << endl << endl;
-
-                if(tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1){
-                    optionOk = true;
-                }
-                else{
-                    cout << endl << endl << "Ese movimiento es ilegal, repita su jugada." << endl << endl << endl;
-                    printTablero();
-                }
+            else
+            {
+                cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
             }
 
             if(option == 1)
             {
-                if(canMoveForward(i, j)){
+                if(canMoveForward(i, j))
+                {
                     moveForward(i, j);
                     moveOk = true;
                 }
@@ -445,7 +480,8 @@ public:
 
             if(option == 2)
             {
-                if(canKillRight(i, j)){
+                if(canKillRight(i, j))
+                {
                     killRight(i, j);
                     moveOk = true;
                 }
@@ -454,22 +490,86 @@ public:
 
             if(option == 3)
             {
-                if(canKillLeft(i, j)){
+                if(canKillLeft(i, j))
+                {
                     killLeft(i, j);
                     moveOk = true;
                 }
             }
 
+            else
+            {
+                cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
+                optionOk = false;
+            }
+
+
+            while (!moveOk)
+            {
+                while(!optionOk)
+                {
+                    cout<< "\nSelecciona las coordenadas de la ficha que quieres mover\n";
+                    cout << "\ti: ";
+                    cin >> i;
+                    cout << "\tj: ";
+                    cin >> j;
+
+                    cout << "\nSelecciona que movimiento quieres realizar: \n";
+                    cout << "[1] mover hacia delante" << '\n';
+                    cout << "[2] comer hacia la derecha" << '\n';
+                    cout << "[3] comer hacia la izquerda" << '\n';
+                    cout << "Introduzca su jugada: ";
+                    cin >> option;
+                    cout << '\n' << '\n' << '\n';
+
+                    if(tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1)
+                    {
+                        optionOk = true;
+                    }
+
+                    else
+                    {
+                        cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
+                        printTablero();
+                    }
+                }
+
+                if(option == 1)
+                {
+                    if(canMoveForward(i, j))
+                    {
+                        moveForward(i, j);
+                        moveOk = true;
+                    }
+                }
+
+                if(option == 2)
+                {
+                    if(canKillRight(i, j))
+                    {
+                        killRight(i, j);
+                        moveOk = true;
+                    }
+                }
+
+
+                if(option == 3)
+                {
+                    if(canKillLeft(i, j))
+                    {
+                        killLeft(i, j);
+                        moveOk = true;
+                    }
+                }
+
+                else
+                {
+                    cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
+                    optionOk = false;
+                }
+            }
         }
-    }
-
 };
-
-
-// imprime el tablero
-
-
-// selecciona un movimiento
 
 
 int main()
@@ -492,7 +592,9 @@ int main()
     if (board.getWinnerTeam() == "Las blancas han ganado!"){
         white_wins++;
     }
-    else{
+
+    else
+    {
         black_wins++;
     }
 
