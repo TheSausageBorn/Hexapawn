@@ -109,7 +109,7 @@ class Board
         {
 
 
-            // condicion de solo quedan negras o blancas (no funciona)
+            // condicion de solo quedan negras o blancas
             int blancas = 0;
             int negras = 0;
 
@@ -126,10 +126,7 @@ class Board
                         }
                         else
                         {
-                            if(tablero_[i][j]->getTeam() == "Blanco")
-                            {
-                                blancas++;
-                            }
+                            blancas++;
                         }
                     }
                 }
@@ -185,7 +182,7 @@ class Board
         string getWinnerTeam()
         {
 
-            // condicion de que algun equipo haya sido eliminado (no funciona)
+            // condicion de solo quedan negras o blancas
             int blancas = 0;
             int negras = 0;
 
@@ -202,13 +199,9 @@ class Board
                         }
                         else
                         {
-                            if(tablero_[i][j]->getTeam() == "Blanco")
-                            {
-                                blancas++;
-                            }
+                            blancas++;
                         }
                     }
-
                 }
             }
 
@@ -222,7 +215,6 @@ class Board
 
 
 
-
             // condicion de que las blancas o las negras lleguen al borde el otro
             for (int j = 0; j < 3; j++)
             {
@@ -232,7 +224,7 @@ class Board
                 }
                 if (tablero_[0][j] != NULL && tablero_[0][j]->getTeam() == "Negro")
                 {
-                    return "Las negras han ganado!";
+                    return "Las negras han ganado";
                 }
             }
 
@@ -268,7 +260,7 @@ class Board
         // calcula si la pieza seleccionada pueder mover hacia delante
         bool canMoveForward(int i, int j)
         {
-            if(tablero_[i][j]->getTeam() == "Blanco")
+            if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Blanco")
             {
                 if(tablero_[i+1][j] == NULL && i < 2)
                 {
@@ -277,7 +269,7 @@ class Board
 
             }
 
-            else
+            if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Negro")
             {
                 if(tablero_[i-1][j] == NULL && i > 0)
                 {
@@ -576,26 +568,31 @@ int main()
 {
     int white_wins = 0;
     int black_wins = 0;
+    int win_counter = 0;
 
     Board board;
 
-    // game logic
     board.printTablero();
 
-    while(!board.isWinScenario())
+    while(win_counter <= 3)
     {
-        board.userMove();
+        while(!board.isWinScenario())
+        {
+            board.userMove();
 
-        board.printTablero();
-    }
+            board.printTablero();
+        }
 
-    if (board.getWinnerTeam() == "Las blancas han ganado!"){
-        white_wins++;
-    }
+        if (board.getWinnerTeam() == "Las blancas han ganado!"){
+            white_wins++;
+            win_counter++;
+        }
 
-    else
-    {
-        black_wins++;
+        else
+        {
+            black_wins++;
+            win_counter++;
+        }
     }
 
     return 0;
