@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <cstdlib>
 using namespace std;
 
 class Pawn
@@ -647,6 +648,138 @@ class Board
                 }
             }
         }
+
+        void machineMoveWhite()
+        {
+            int i;
+            int j;
+            bool moveOk = false;
+            bool optionOk = false;
+            int option = 0;
+
+            do
+            {
+                printTablero();
+
+                i = rand() % 2;
+                j = rand() % 2;
+                option = rand() % 3;
+
+
+                if(tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Blanco" && option <= 3 && option >=1)
+                {
+                    optionOk = true;
+
+                    switch (option)
+                    {
+                        case 1: {
+                            moveOk = canMoveForward(i, j);
+                            break;
+                        }
+                        case 2: {
+                            moveOk = canKillRight(i, j);
+                            break;
+                        }
+                        case 3: {
+                            moveOk = canKillLeft(i, j);
+                            break;
+                        }
+                    }
+
+                }
+
+            } while(!optionOk && !moveOk);
+
+            switch (option)
+            {
+                case 1:{
+                    moveForward(i, j);
+                    break;
+                }
+                case 2:{
+                    killRight(i, j);
+                    break;
+                }
+                case 3:{
+                    killLeft(i, j);
+                    break;
+                }
+            }
+        }
+
+        void machineMoveBlack()
+        {
+            int i;
+            int j;
+            int ii;
+            int jj;
+            int selectedId;
+            bool moveOk = false;
+            bool optionOk = false;
+            int option;
+
+            do
+            {
+                printTablero();
+
+                selectedId = rand() % 3;
+                option = rand() % 3 + 1;
+
+                for(ii = 0; ii < 3; ii++)
+                {
+                    for(jj = 0; jj < 3; jj++)
+                    {
+                        if(tablero_[ii][jj] != NULL && tablero_[ii][jj]->getTeam() == "Negro" && tablero_[ii][jj]->getId() == selectedId)
+                        {
+                            i = ii;
+                            j = jj;
+                        }
+                    }
+                }
+
+
+                if(i <= 2 && i >= 0 && j <= 2 && j >= 0 && tablero_[i][j] != NULL && tablero_[i][j]->getTeam() == "Negro" && option <= 3 && option >=1)
+                {
+                    optionOk = true;
+
+                    switch (option)
+                    {
+                        case 1: {
+                            moveOk = canMoveForward(i, j);
+                            break;
+                        }
+                        case 2: {
+                            moveOk = canKillRight(i, j);
+                            break;
+                        }
+                        case 3: {
+                            moveOk = canKillLeft(i, j);
+                            break;
+                        }
+                    }
+
+                }
+
+            } while(!optionOk && !moveOk);
+
+            switch (option)
+            {
+                case 1:{
+                    moveForward(i, j);
+                    break;
+                }
+                case 2:{
+                    killRight(i, j);
+                    break;
+                }
+                case 3:{
+                    killLeft(i, j);
+                    break;
+                }
+            }
+        }
+
+
 };
 
 
@@ -667,7 +800,7 @@ int main()
                 board.userMoveWhite();
             }else{
                 cout << "Turno del equipo negro:" << '\n' << '\n' << '\n';
-                board.userMoveBlack();
+                board.machineMoveBlack();
             }
             turn_counter++;
         }
