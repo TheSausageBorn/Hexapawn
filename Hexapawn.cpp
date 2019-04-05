@@ -564,7 +564,7 @@ class Board
                 }else{
                     cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
                 }
-            } while(!optionOk && !moveOk);
+            } while(!optionOk || !moveOk);
 
             switch (option)
             {
@@ -630,7 +630,7 @@ class Board
                 }else{
                     cout << "Ese movimiento es ilegal, repita su jugada." << '\n' << '\n' << '\n';
                 }
-            } while(!optionOk && !moveOk);
+            } while(!optionOk || !moveOk);
 
             switch (option)
             {
@@ -659,8 +659,6 @@ class Board
 
             do
             {
-                printTablero();
-
                 i = rand() % 2;
                 j = rand() % 2;
                 option = rand() % 3;
@@ -688,7 +686,7 @@ class Board
 
                 }
 
-            } while(!optionOk && !moveOk);
+            } while(!optionOk || !moveOk);
 
             switch (option)
             {
@@ -711,8 +709,8 @@ class Board
         {
             int i;
             int j;
-            int ii;
-            int jj;
+            int i_;
+            int j_;
             int selectedId;
             bool moveOk = false;
             bool optionOk = false;
@@ -720,19 +718,17 @@ class Board
 
             do
             {
-                printTablero();
-
                 selectedId = rand() % 3;
                 option = rand() % 3 + 1;
 
-                for(ii = 0; ii < 3; ii++)
+                for(i_ = 0; i_ < 3; i_++)
                 {
-                    for(jj = 0; jj < 3; jj++)
+                    for(j_ = 0; j_ < 3; j_++)
                     {
-                        if(tablero_[ii][jj] != NULL && tablero_[ii][jj]->getTeam() == "Negro" && tablero_[ii][jj]->getId() == selectedId)
+                        if(tablero_[i_][j_] != NULL && tablero_[i_][j_]->getTeam() == "Negro" && tablero_[i_][j_]->getId() == selectedId)
                         {
-                            i = ii;
-                            j = jj;
+                            i = i_;
+                            j = j_;
                         }
                     }
                 }
@@ -760,7 +756,7 @@ class Board
 
                 }
 
-            } while(!optionOk && !moveOk);
+            }while(!moveOk || !optionOk);
 
             switch (option)
             {
