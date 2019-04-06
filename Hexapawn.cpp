@@ -2,6 +2,7 @@
 #include <string>
 #include <stdlib.h>
 #include <cstdlib>
+#include <fstream>
 using namespace std;
 
 class Pawn
@@ -227,7 +228,7 @@ class Board
             }
 
 
-
+            // condicion de que las blancas o las negras no tienen movimientos posibles
             bool blanco_se_puede_mover = false;
             bool negro_se_puede_mover = false;
 
@@ -794,9 +795,11 @@ int main()
             {
                 cout << "Turno del equipo blanco:" << '\n' << '\n' << '\n';
                 board.userMoveWhite();
+                board.printTablero();
             }else{
                 cout << "Turno del equipo negro:" << '\n' << '\n' << '\n';
                 board.machineMoveBlack();
+                board.printTablero();
             }
             turn_counter++;
         }
@@ -811,6 +814,7 @@ int main()
         {
             black_wins++;
             cout << board.getWinnerTeam() << '\n' << '\n' << '\n';
+
         }
 
     return 0;
